@@ -19,7 +19,7 @@ public class RespawnTask extends Thread {
             while (location.equals(tmpLocation)) {
                 tmpLocation = player.getLocation().toString();
             }
-            player.setSaturation((float) SetHungerHealth.hunger);
+            player.setFoodLevel((int) SetHungerHealth.hunger);
             player.setHealth(SetHungerHealth.health);
         } catch (NullPointerException e) {
             return;

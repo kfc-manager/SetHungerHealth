@@ -29,7 +29,8 @@ public class SettingsConfig {
                 file.createNewFile();
                 config = YamlConfiguration.loadConfiguration(file);
                 plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[SetHungerHealth] settings.yml file has been created!");
-                loadDefault();
+                loadHungerDefault();
+                loadHealthDefault();
             } catch (IOException e) {
                 plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: could not create settings.yml file!");
             }
@@ -37,14 +38,23 @@ public class SettingsConfig {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    private void loadDefault() {
+    private void loadHungerDefault() {
         config.set("Hunger", 20.0);
+        try {
+            config.save(file);
+            config = YamlConfiguration.loadConfiguration(file);
+        } catch (IOException e) {
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: could not load hunger default of settings.yml file!");
+        }
+    }
+
+    private void loadHealthDefault() {
         config.set("Health", 20.0);
         try {
             config.save(file);
             config = YamlConfiguration.loadConfiguration(file);
         } catch (IOException e) {
-            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: could not load default of settings.yml file!");
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: could not load health default of settings.yml file!");
         }
     }
 
@@ -52,10 +62,15 @@ public class SettingsConfig {
         double values[] = new double[2];
         values[0] = config.getDouble("Hunger");
         values[1] = config.getDouble("Health");
-        if (values[0] < 1.0 || values[0] > 20.0 || values[1] < 1.0 || values[1] > 20.0) {
-            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: values of hunger and health need to be between 1.0 and 20.0! (restoring config to default)");
-            loadDefault();
-            return new double[]{20.0, 20.0};
+        if (values[0] < 0.0 || values[0] > 20.0) {
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: value of hunger needs to be between 0.0 and 20.0! (restoring config to default)");
+            loadHungerDefault();
+            values[0] = 20.0;
+        }
+        if (values[1] < 1.0 || values[1] > 20.0) {
+            plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "[SetHungerHealth] CONFIG ERROR: value of health needs to be between 1.0 and 20.0! (restoring config to default)");
+            loadHealthDefault();
+            values[1] = 20.0;
         }
         return values;
     }
