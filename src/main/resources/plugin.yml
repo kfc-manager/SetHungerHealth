@@ -1,0 +1,4 @@
+name: SetHungerHealth
+version: '${project.version}'
+main: kalle.com.sethungerhealth.SetHungerHealth
+api-version: 1.13
